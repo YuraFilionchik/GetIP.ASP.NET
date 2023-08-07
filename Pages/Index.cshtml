@@ -1,0 +1,49 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Проверка доступности камер";
+}
+
+<div class="left-panel">
+    <form>
+        <p>
+            Введите текст, содержащий IP адреса: <br />
+            <input type="text" asp-for="SearchString" />
+            <input type="submit" value="Find" />
+        </p>
+    </form>
+</div>
+<div class="right-panel">
+    <!-- Здесь будет результат от сервера -->
+    <p>Результаты</p>
+    @if (Model.Cameras != null)
+    {
+       <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cameras[0].Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cameras[0].IsOnline)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model.Cameras)
+    {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsOnline)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table> 
+    }
+    
+</div>
