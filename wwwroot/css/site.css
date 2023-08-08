@@ -17,3 +17,28 @@ body {
   margin-bottom: 60px;
 }
 
+.parent {
+    display: flex;
+}
+
+.left-panel {
+    flex: 2;
+    
+}
+
+.right-panel {
+    flex: 3;
+    
+}
+
+.button{
+    flex:2
+}
+
+.Online{
+    background-color: olivedrab;
+}
+
+.Offline{
+    background-color:firebrick;
+}

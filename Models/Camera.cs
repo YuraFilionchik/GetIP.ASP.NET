@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.NetworkInformation;
 
 namespace Notes.Models
 {
@@ -11,6 +12,12 @@ namespace Notes.Models
         {
             Address = ip;
             IsOnline = false;
+        }
+
+        public Camera(string ip, string status)
+        {
+            Address = ip;
+            IsOnline = status == IPStatus.Success.ToString();
         }
     }
 }

@@ -3,13 +3,13 @@
 @{
     ViewData["Title"] = "Проверка доступности камер";
 }
-
+<div class="parent">
 <div class="left-panel">
     <form>
         <p>
             Введите текст, содержащий IP адреса: <br />
-            <input type="text" asp-for="SearchString" />
-            <input type="submit" value="Find" />
+            <textarea asp-for="SearchString" rows="20" cols="50"></textarea>
+            <input class="button" type="submit" value="Проверить" />
         </p>
     </form>
 </div>
@@ -21,24 +21,37 @@
        <table class="table">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Cameras[0].Address)
+                 <th>
+                    #
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Cameras[0].IsOnline)
+                    IP адрес
+                </th>
+                <th>
+                    Доступность
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
+            @{var i = 1;}
     @foreach (var item in Model.Cameras)
     {
                 <tr>
                     <td>
+                        -
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.Address)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.IsOnline)
+                        @if(item.IsOnline) 
+                        {
+                            <p class="Online">Доступен</p>
+                        }else 
+                        {
+                            <p class="Offline">Недоступен</p>
+                        }
                     </td>
                 </tr>
             }
@@ -47,3 +60,4 @@
     }
     
 </div>
+    </div>

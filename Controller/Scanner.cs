@@ -25,13 +25,25 @@ namespace Notes.Controller
                     MaxDegreeOfParallelism = addresses.Length
                 };
                 Parallel.ForEach(addresses, options, address => {
-                    Ping ping = new Ping();
-                    PingReply reply = ping.Send(address, 1000);
-                    OnScannerEvent(new ScannerEventArgs(reply.Address, reply.Status));
+                    try
+                    {
+                        Ping ping = new Ping();
+                        PingReply reply = ping.Send(address, 1000);
+                        OnScannerEvent(new ScannerEventArgs(reply.Address, reply.Status));
+                    }catch(Exception) { }
                 });
             }, token);
         }
 
+        public bool InProcess()
+        {
+            if (Task == null || Task.IsCompleted)  
+            {
+                    return false;
+            }
+
+            return true; 
+        }
         public void StopPings()
         {
             if (Task != null)

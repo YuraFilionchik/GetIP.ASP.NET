@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Net;
 using System.Text.RegularExpressions;
 using Notes.Models;
+using System.Collections;
 
 namespace Notes.Pages
 {
@@ -33,11 +34,46 @@ namespace Notes.Pages
 
         }
 
-        //public async Task OnGetAsync()
-        //{
-            
+        public async Task OnGetAsync()
+        {
+            Regex regex = new Regex(searchTemplate);
+            if (String.IsNullOrEmpty(SearchString))
+            {
+                return;
+            }
 
-        //}
+            MatchCollection matches = regex.Matches(SearchString);
+            List<string> ipList = new List<string>();
+            if (matches.Count > 0)
+            {
+                foreach (Match match in matches)
+                {
+                    ipList.Add(match.Value);
+                }
+            }
+            else
+            {
+                //textNotFound;
+            }
+            if (ipList.Count == 0) return;
+            //Cameras = new List<Camera>();
+            //foreach (string ip in ipList)
+            //{
+            //    Cameras.Add(new Camera(ip));
+            //}
+            scanner.StopPings();
+            scanner.ScanParallel(ipList.ToArray());
+            await WaitPinging(scanner);
+
+        }
+
+        private async Task WaitPinging(Scanner scanner)
+        {
+            while (scanner.InProcess())
+            {
+                _ = Task.Delay(TimeSpan.FromMilliseconds(200));
+            }
+        }
 
         //result of ping
         void scanner_ScannerEvent(object sender, ScannerEventArgs e)
@@ -60,7 +96,15 @@ namespace Notes.Pages
                 addText = statusOffline;
                 highlight = colorOffline;
             }
-
+            if (Cameras == null) Cameras = new List<Camera>();
+            if (Cameras.Count( x => x.Address == ip) > 0)
+            {
+                Cameras.First(x=>x.Address == ip).IsOnline = status == IPStatus.Success;
+            }
+            else
+            {
+                Cameras.Add(new Camera(ip, status.ToString())) ;
+            }
             //for (int i = 0; i < tbOutput.Lines.Count(); i++)
             //{
             //    if (tbOutput.Lines[i].Split(' ')[0] == ip)
@@ -83,39 +127,12 @@ namespace Notes.Pages
             //    }
             //}
 
-
         }
 
-        public void OnGet()
-        {
-            Regex regex = new Regex(searchTemplate);
-            if (String.IsNullOrEmpty(SearchString))
-            {
-                return;
-            }
-
-            MatchCollection matches = regex.Matches(SearchString);
-            List<string> ipList = new List<string>();
-            if (matches.Count > 0)
-            {
-                foreach (Match match in matches)
-                {
-                    ipList.Add(match.Value);
-                }
-            }
-            else
-            {
-                //textNotFound;
-            }
-            if (ipList.Count == 0) return;
-            Cameras = new List<Camera>();
-            foreach (string ip in ipList)
-            {
-                Cameras.Add(new Camera(ip));
-            }
-            //scanner.StopPings();
-            //scanner.ScanParallel(ipList.ToArray());
-        }
+        //public void OnGet()
+        //{
+            
+        //}
 
 
     }
