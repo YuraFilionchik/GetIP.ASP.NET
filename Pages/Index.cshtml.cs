@@ -21,7 +21,7 @@ namespace Notes.Pages
         Color colorOnline = Color.Green;
         Color colorOffline = Color.Red;
         const string searchTemplate = @"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b";
-
+        int counter = 1;
 
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
@@ -34,8 +34,9 @@ namespace Notes.Pages
 
         }
 
-        public async Task OnGetAsync()
+        public async Task OnPostAsync()
         {
+            counter = 1;
             Regex regex = new Regex(searchTemplate);
             if (String.IsNullOrEmpty(SearchString))
             {
@@ -56,25 +57,20 @@ namespace Notes.Pages
                 //textNotFound;
             }
             if (ipList.Count == 0) return;
-            //Cameras = new List<Camera>();
-            //foreach (string ip in ipList)
-            //{
-            //    Cameras.Add(new Camera(ip));
-            //}
+            
             scanner.StopPings();
-            scanner.ScanParallel(ipList.ToArray());
-            await WaitPinging(scanner);
+            await scanner.ScanParallel(ipList.ToArray());
+            Cameras = Cameras.OrderBy(x => x.IsOnline).ToList();
 
         }
 
         private async Task WaitPinging(Scanner scanner)
         {
-            while (scanner.InProcess())
-            {
-                _ = Task.Delay(TimeSpan.FromMilliseconds(200));
-            }
+            Thread.Sleep(300);
+            
         }
 
+        
         //result of ping
         void scanner_ScannerEvent(object sender, ScannerEventArgs e)
         {

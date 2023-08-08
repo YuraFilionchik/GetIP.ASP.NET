@@ -15,7 +15,7 @@ namespace Notes.Controller
         CancellationToken token;
         public event EventHandler<ScannerEventArgs> ScannerEvent;
 
-        public void ScanParallel(string[] addresses)
+        public Task ScanParallel(string[] addresses)
         {
             cancelTokenSource = new CancellationTokenSource();
             token = cancelTokenSource.Token;
@@ -28,11 +28,13 @@ namespace Notes.Controller
                     try
                     {
                         Ping ping = new Ping();
-                        PingReply reply = ping.Send(address, 1000);
+                        PingReply reply = ping.Send(address, 1300);
                         OnScannerEvent(new ScannerEventArgs(reply.Address, reply.Status));
-                    }catch(Exception) { }
+                    }
+                    catch (Exception) { }
                 });
             }, token);
+            return Task;
         }
 
         public bool InProcess()

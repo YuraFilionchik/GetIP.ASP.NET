@@ -5,17 +5,32 @@
 }
 <div class="parent">
 <div class="left-panel">
-    <form>
+        <form method="post">
         <p>
             Введите текст, содержащий IP адреса: <br />
-            <textarea asp-for="SearchString" rows="20" cols="50"></textarea>
+            <textarea asp-for="SearchString" rows="25" cols="60"></textarea>
             <input class="button" type="submit" value="Проверить" />
         </p>
     </form>
 </div>
 <div class="right-panel">
     <!-- Здесь будет результат от сервера -->
-    <p>Результаты</p>
+        @{
+            string message = "";
+            if (Model.Cameras != null)
+            {
+                int total = Model.Cameras.Count;
+                int offline = Model.Cameras.Count(x => !x.IsOnline);
+                if (total == offline)
+                {
+                    message = "Найдено " + total + " ip. Все доступны.";
+                }else
+                {
+                    message = offline + " недоступно из " + total;
+                }
+            }   
+        }
+    <p>@message</p>
     @if (Model.Cameras != null)
     {
        <table class="table">
@@ -34,12 +49,13 @@
             </tr>
         </thead>
         <tbody>
-            @{var i = 1;}
+            @{int i = 1;}
     @foreach (var item in Model.Cameras)
-    {
-                <tr>
+                    {
+                        <tr>
                     <td>
-                        -
+                             @Html.DisplayFor(modelItem => i)
+                             @{i++;}
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Address)
