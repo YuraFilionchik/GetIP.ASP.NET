@@ -18,17 +18,18 @@ body {
 }
 
 .parent {
+    margin: 10px;
     display: flex;
 }
 
 .left-panel {
     flex: 2;
-    
+    padding-right: 20px;
 }
 
 .right-panel {
     flex: 3;
-    
+    padding-left: 10px;
 }
 
 .button{
@@ -40,5 +41,17 @@ body {
 }
 
 .Offline{
-    background-color:firebrick;
+    background-color:lightcoral;
+}
+
+.tr_online {
+    background-color: white;
+    box-sizing: content-box;
+    margin-bottom: 0em;
+}
+
+.tr_offline {
+    background-color: navajowhite;
+    box-sizing: content-box;
+    margin-bottom: 0em;
 }

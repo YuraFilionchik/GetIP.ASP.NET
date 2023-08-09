@@ -63,13 +63,6 @@ namespace Notes.Pages
             Cameras = Cameras.OrderBy(x => x.IsOnline).ToList();
 
         }
-
-        private async Task WaitPinging(Scanner scanner)
-        {
-            Thread.Sleep(300);
-            
-        }
-
         
         //result of ping
         void scanner_ScannerEvent(object sender, ScannerEventArgs e)

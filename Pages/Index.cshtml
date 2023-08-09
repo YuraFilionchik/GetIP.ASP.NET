@@ -8,7 +8,7 @@
         <form method="post">
         <p>
             Введите текст, содержащий IP адреса: <br />
-            <textarea asp-for="SearchString" rows="25" cols="60"></textarea>
+            <textarea asp-for="SearchString" rows="30" cols="70"></textarea>
             <input class="button" type="submit" value="Проверить" />
         </p>
     </form>
@@ -49,10 +49,14 @@
             </tr>
         </thead>
         <tbody>
-            @{int i = 1;}
+            @{int i = 1; string tr_class = "tr_online";}
     @foreach (var item in Model.Cameras)
                     {
-                        <tr>
+            @if(!item.IsOnline) 
+                        {
+                        tr_class = "tr_offline";
+                         }
+            <tr class=@tr_class>
                     <td>
                              @Html.DisplayFor(modelItem => i)
                              @{i++;}
@@ -68,7 +72,7 @@
                         {
                             <p class="Offline">Недоступен</p>
                         }
-                    </td>
+                            </td>
                 </tr>
             }
         </tbody>
