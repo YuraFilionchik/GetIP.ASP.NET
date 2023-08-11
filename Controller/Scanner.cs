@@ -19,22 +19,33 @@ namespace Notes.Controller
         {
             cancelTokenSource = new CancellationTokenSource();
             token = cancelTokenSource.Token;
-            Task = Task.Factory.StartNew(() => {
-                ParallelOptions options = new ParallelOptions()
+            //task = Task.Factory.StartNew(() => {
+            //    ParallelOptions options = new ParallelOptions()
+            //    {
+            //        MaxDegreeOfParallelism = addresses.Length
+            //    };
+            //    Parallel.ForEach(addresses, options, address => {
+            //        try
+            //        {
+            //            Ping ping = new Ping();
+            //            PingReply reply = ping.Send(address, 1300);
+            //            OnScannerEvent(new ScannerEventArgs(reply.Address, reply.Status));
+            //        }
+            //        catch (Exception) { }
+            //    });
+            //}, token);
+            List<Task> tasks = new List<Task>();
+            foreach(string address in addresses)
+            {
+                tasks.Add(Task.Factory.StartNew(() =>
                 {
-                    MaxDegreeOfParallelism = addresses.Length
-                };
-                Parallel.ForEach(addresses, options, address => {
-                    try
-                    {
-                        Ping ping = new Ping();
-                        PingReply reply = ping.Send(address, 1300);
-                        OnScannerEvent(new ScannerEventArgs(reply.Address, reply.Status));
-                    }
-                    catch (Exception) { }
-                });
-            }, token);
-            return Task;
+                    Ping ping = new Ping();
+                    PingReply reply = ping.Send(address, 1300);
+                    OnScannerEvent(new ScannerEventArgs(reply.Address, reply.Status));
+                }, token));
+                
+            }
+            return Task.WhenAll(tasks);
         }
 
         public bool InProcess()

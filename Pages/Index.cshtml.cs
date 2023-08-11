@@ -58,8 +58,9 @@ namespace Notes.Pages
             }
             if (ipList.Count == 0) return;
             
-            scanner.StopPings();
-            await scanner.ScanParallel(ipList.ToArray());
+            //scanner.StopPings();
+            Task t = scanner.ScanParallel(ipList.ToArray());
+            
             Cameras = Cameras.OrderBy(x => x.IsOnline).ToList();
 
         }

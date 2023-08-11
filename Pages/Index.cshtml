@@ -23,10 +23,16 @@
                 int offline = Model.Cameras.Count(x => !x.IsOnline);
                 if (total == offline)
                 {
-                    message = "Найдено " + total + " ip. Все доступны.";
+                    message = "Найдено " + total + " ip. Все недоступны.";
                 }else
                 {
-                    message = offline + " недоступно из " + total;
+                    if (offline == 0)
+                    {
+                        message = "Найдено " + total + " камер. Все доступны.";
+                    }else
+                    {
+                        message = offline + " недоступно из " + total;
+                    }
                 }
             }   
         }
@@ -49,14 +55,10 @@
             </tr>
         </thead>
         <tbody>
-            @{int i = 1; string tr_class = "tr_online";}
+            @{int i = 1;}
     @foreach (var item in Model.Cameras)
                     {
-            @if(!item.IsOnline) 
-                        {
-                        tr_class = "tr_offline";
-                         }
-            <tr class=@tr_class>
+            <tr class=tr_@item>
                     <td>
                              @Html.DisplayFor(modelItem => i)
                              @{i++;}
@@ -67,7 +69,7 @@
                     <td>
                         @if(item.IsOnline) 
                         {
-                            <p class="Online">Доступен</p>
+                            <p  class="Online">Доступен</p>
                         }else 
                         {
                             <p class="Offline">Недоступен</p>
