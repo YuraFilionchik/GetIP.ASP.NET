@@ -8,7 +8,7 @@
         <form method="post">
         <p>
             Введите текст, содержащий IP адреса: <br />
-            <textarea asp-for="SearchString" rows="30" cols="70"></textarea>
+            <textarea asp-for="SearchString" rows="25" cols="70"></textarea>
             <input class="button" type="submit" value="Проверить" />
         </p>
     </form>
@@ -36,7 +36,7 @@
                 }
             }   
         }
-    <p>@message</p>
+    <p class="message">@message</p>
     @if (Model.Cameras != null)
     {
        <table class="table">
@@ -67,14 +67,8 @@
                         @Html.DisplayFor(modelItem => item.Address)
                     </td>
                     <td>
-                        @if(item.IsOnline) 
-                        {
-                            <p  class="Online">Доступен</p>
-                        }else 
-                        {
-                            <p class="Offline">Недоступен</p>
-                        }
-                            </td>
+                        <p  class=@item> @item.StatusRU </p>
+                    </td>
                 </tr>
             }
         </tbody>

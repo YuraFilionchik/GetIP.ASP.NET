@@ -14,18 +14,11 @@ namespace Notes.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         Scanner scanner = new Scanner();
-        const string formName = "IP checker";
-        const string statusOnline = " = Online";
-        const string statusOffline = " = Offline";
-        const string textNotFound = "No matches found";
-        Color colorOnline = Color.Green;
-        Color colorOffline = Color.Red;
         const string searchTemplate = @"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b";
-        int counter = 1;
 
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
-        public IList<Camera> Cameras { get; set; } = default!;
+        public IList<CameraView> Cameras { get; set; } = default!;
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -36,7 +29,6 @@ namespace Notes.Pages
 
         public async Task OnPostAsync()
         {
-            counter = 1;
             Regex regex = new Regex(searchTemplate);
             if (String.IsNullOrEmpty(SearchString))
             {
@@ -47,83 +39,44 @@ namespace Notes.Pages
             List<string> ipList = new List<string>();
             if (matches.Count > 0)
             {
-                foreach (Match match in matches)
+                foreach (Match match in matches.Cast<Match>())
                 {
                     ipList.Add(match.Value);
                 }
             }
             else
             {
-                //textNotFound;
+                Cameras = new List<CameraView>();
+                return;
             }
-            if (ipList.Count == 0) return;
-            
-            //scanner.StopPings();
-            Task t = scanner.ScanParallel(ipList.ToArray());
-            
+
+            await scanner.ScanParallel(ipList.ToArray());
             Cameras = Cameras.OrderBy(x => x.IsOnline).ToList();
 
         }
-        
+
         //result of ping
         void scanner_ScannerEvent(object sender, ScannerEventArgs e)
         {
-                DisplayIP(e.Address, e.Status);
+            DisplayIP(e.Address, e.Status);
         }
 
         private void DisplayIP(IPAddress address, IPStatus status)
         {
             string ip = address.ToString();
-            string addText;
-            Color highlight;
-            if (status == IPStatus.Success)
+            Cameras ??= new List<CameraView>();
+            lock (Cameras)
             {
-                addText = statusOnline;
-                highlight = colorOnline;
+                if (Cameras.Any(x => x.Address == ip))
+                {
+                    var cam = Cameras.First(x => x.Address == ip);
+                    cam.IsOnline = status == IPStatus.Success;
+                }
+                else
+                {
+                    Cameras.Add(new CameraView(ip, status.ToString()));
+                }
             }
-            else
-            {
-                addText = statusOffline;
-                highlight = colorOffline;
-            }
-            if (Cameras == null) Cameras = new List<Camera>();
-            if (Cameras.Count( x => x.Address == ip) > 0)
-            {
-                Cameras.First(x=>x.Address == ip).IsOnline = status == IPStatus.Success;
-            }
-            else
-            {
-                Cameras.Add(new Camera(ip, status.ToString())) ;
-            }
-            //for (int i = 0; i < tbOutput.Lines.Count(); i++)
-            //{
-            //    if (tbOutput.Lines[i].Split(' ')[0] == ip)
-            //    {
-            //        int lineStartIndex = tbOutput.GetFirstCharIndexFromLine(i);
-            //        int lineLength = tbOutput.Lines[i].Length;
-            //        tbOutput.SelectionStart = lineStartIndex;
-            //        tbOutput.SelectionLength = lineLength;
-            //        string oldText = tbOutput.Lines[i].ToString();
-
-            //        if (!oldText.Contains(addText))
-            //        {
-            //            string newText = oldText + addText;
-            //            tbOutput.SelectedText = newText;
-            //            tbOutput.Find(newText);
-            //        }
-
-            //        tbOutput.SelectionBackColor = highlight;
-            //        tbOutput.DeselectAll();
-            //    }
-            //}
-
         }
-
-        //public void OnGet()
-        //{
-            
-        //}
-
-
     }
 }

@@ -7,7 +7,11 @@ namespace Notes.Models
     {
         public bool IsOnline { get; set; }
         public string? Address { get; set; }
-
+        public enum Status
+        {
+            Online = 0,
+            Offline = 1
+        }
 
         public Camera(string ip)    
         {
@@ -20,9 +24,11 @@ namespace Notes.Models
             Address = ip;
             IsOnline = status == IPStatus.Success.ToString();
         }
+
+
         public override string ToString()
         {
-            return IsOnline ? "Online" : "Offline";
+            return IsOnline ? Status.Online.ToString() : Status.Offline.ToString();
         }
 
     }
