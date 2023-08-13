@@ -9,7 +9,7 @@
         <p>
             Введите текст, содержащий IP адреса: <br />
             <textarea asp-for="SearchString" rows="25" cols="70"></textarea>
-            <input class="button" type="submit" value="Проверить" />
+            <input class="accordion-button" type="submit" value="Проверить" />
         </p>
     </form>
 </div>
@@ -39,11 +39,11 @@
     <p class="message">@message</p>
     @if (Model.Cameras != null)
     {
-       <table class="table">
-        <thead>
-            <tr>
+       <table class="table-bordered">
+                <thead>
+            <tr class="bg-info">
                  <th>
-                    #
+                   #
                 </th>
                 <th>
                     IP адрес
@@ -51,7 +51,6 @@
                 <th>
                     Доступность
                 </th>
-                <th></th>
             </tr>
         </thead>
         <tbody>

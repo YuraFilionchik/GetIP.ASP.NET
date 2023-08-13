@@ -13,8 +13,9 @@ html {
   min-height: 100%;
 }
 
-table{
-    border-style:groove;
+table {
+    border-style: groove;
+    width: -webkit-fill-available;
 }
 body {
   margin-bottom: 60px;
@@ -28,6 +29,7 @@ body {
 .left-panel {
     flex: 2;
     padding-right: 20px;
+    box-sizing: content-box;
 }
 
 .right-panel {
@@ -43,12 +45,13 @@ body {
 
 .Online {
     background-color: mediumspringgreen;
-    margin: 0;
+    margin: 3px;
+    border-block:groove;
 }
 
 .Offline{
     
-    margin:0;
+    margin:3px;
 }
 
 .tr_Online {
@@ -60,8 +63,8 @@ body {
 
 .tr_Offline {
     background-color: lightcoral;
-    box-sizing: content-box;
-    margin-bottom: 0em;
+   
+    margin-bottom: 3px;
     font-weight: 800;
 }
 
